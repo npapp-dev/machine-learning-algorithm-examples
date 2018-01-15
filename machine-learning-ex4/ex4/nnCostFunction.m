@@ -62,23 +62,26 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+I = eye(num_labels);
+Y = zeros(m, num_labels);
+for i=1:m
+  Y(i, :)= I(y(i), :);
+end
 
+a1 = [ones(m,1) X];
+z1 = a1*Theta1';
+a2 = [ones(size(z1,1), 1) sigmoid(z1)];
+z2 = a2*Theta2';
+a3 = sigmoid(z2);
 
+%implementation of cost function
+J = (1/m)*sum(sum((-Y).*log(a3) - (1-Y).*log(1-a3), 2))+ (lambda/(2*m))*(sum(sum(Theta1(:, 2:end).^2, 2)) + sum(sum(Theta2(:,2:end).^2, 2)));;
 
+%sigma result of second gradient
+s = ((a3-Y)*Theta2.*sigmoidGradient([ones(size(z1, 1), 1) z1]))(:, 2:end);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+Theta1_grad = (s'*a1)./m+(lambda/m)*[zeros(size(Theta1,1), 1) Theta1(:,2:end)];
+Theta2_grad = ((a3-Y)'*a2)./m +(lambda/m)*[zeros(size(Theta2,1), 1) Theta2(:,2:end)];
 
 % -------------------------------------------------------------
 
